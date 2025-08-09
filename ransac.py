@@ -17,8 +17,10 @@ def ransac_homography(points1, points2, max_iterations=1000, threshold=10):
         inliers = []
         for j in range(len(points1)):
             p1 = np.hstack((points1[j], 1))
-            p2 = np.hstack((points2[j], 1))
-            d = np.linalg.norm(p2 - np.dot(H, p1))
+            # Project the point using the homography and normalize
+            p1_proj = np.dot(H, p1)
+            p1_proj /= p1_proj[2]
+            d = np.linalg.norm(points2[j] - p1_proj[:2])
             if d < threshold:
                 inliers.append(j)
 
